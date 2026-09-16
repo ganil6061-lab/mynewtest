@@ -9,53 +9,65 @@
     <style>
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
         }
 
         body {
-            font-family: Arial, sans-serif;
-            background: #f2f2f2;
+            margin: 0;
             min-height: 100vh;
+
             display: flex;
             justify-content: center;
             align-items: center;
+
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
         }
 
         .game {
-            background: white;
             width: 350px;
             padding: 25px;
+
+            background: white;
             border-radius: 15px;
+
             text-align: center;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
         }
 
         h1 {
-            margin-bottom: 15px;
+            margin-top: 0;
         }
 
         #status {
+            margin-bottom: 20px;
+
             font-size: 20px;
             font-weight: bold;
-            margin-bottom: 20px;
         }
 
         .board {
             display: grid;
+
             grid-template-columns: repeat(3, 1fr);
+
             gap: 8px;
+
             margin-bottom: 20px;
         }
 
         .cell {
             width: 100%;
             aspect-ratio: 1;
-            background: #eeeeee;
+
             border: none;
             border-radius: 10px;
+
+            background: #eeeeee;
+
             font-size: 45px;
             font-weight: bold;
+
             cursor: pointer;
         }
 
@@ -73,11 +85,15 @@
 
         #restart {
             padding: 12px 25px;
+
             border: none;
             border-radius: 8px;
+
             background: #2196f3;
             color: white;
+
             font-size: 16px;
+
             cursor: pointer;
         }
 
@@ -93,30 +109,36 @@
 
         <h1>Tic Tac Toe</h1>
 
-        <div id="status">Player X's Turn</div>
-
-        <div class="board">
-            <button class="cell"></button>
-            <button class="cell"></button>
-            <button class="cell"></button>
-
-            <button class="cell"></button>
-            <button class="cell"></button>
-            <button class="cell"></button>
-
-            <button class="cell"></button>
-            <button class="cell"></button>
-            <button class="cell"></button>
+        <div id="status">
+            Player X's Turn
         </div>
 
-        <button id="restart">Restart Game</button>
+        <div class="board">
+
+            <button class="cell"></button>
+            <button class="cell"></button>
+            <button class="cell"></button>
+
+            <button class="cell"></button>
+            <button class="cell"></button>
+            <button class="cell"></button>
+
+            <button class="cell"></button>
+            <button class="cell"></button>
+            <button class="cell"></button>
+
+        </div>
+
+        <button id="restart">
+            Restart Game
+        </button>
 
     </div>
 
 
     <script>
 
-        // सभी cells को select करना
+        // सभी 9 cells
         const cells = document.querySelectorAll(".cell");
 
         // Status text
@@ -126,7 +148,8 @@
         const restartButton = document.getElementById("restart");
 
 
-        // Game की current स्थिति
+        // Game board
+        // कुल 9 positions
         let board = [
             "",
             "",
@@ -139,51 +162,72 @@
         ];
 
 
-        // शुरुआत में X की turn
+        // पहला player X
         let currentPlayer = "X";
 
-        // Game चल रहा है या नहीं
+
+        // Game चालू है
         let gameRunning = true;
 
 
-        // जीतने के सभी possible combinations
+        // जीतने के सभी combinations
         const winningPatterns = [
 
+            // Rows
             [0, 1, 2],
             [3, 4, 5],
             [6, 7, 8],
 
+            // Columns
             [0, 3, 6],
             [1, 4, 7],
             [2, 5, 8],
 
+            // Diagonal
             [0, 4, 8],
             [2, 4, 6]
 
         ];
 
 
-        // हर cell पर click event
-        cells.forEach((cell, index) => {
+        // हर cell पर click
+        cells.forEach(function(cell, index) {
 
             cell.addEventListener("click", function() {
 
-                // अगर game खत्म हो गया या cell पहले से भरा है
-                if (!gameRunning || board[index] !== "") {
+                // अगर game खत्म हो चुका है
+                if (!gameRunning) {
                     return;
                 }
 
-                // Board में player को रखना
+
+                // अगर cell पहले से भरा है
+                if (board[index] !== "") {
+                    return;
+                }
+
+
+                // Board में X या O डालना
                 board[index] = currentPlayer;
 
-                // Screen पर X या O दिखाना
+
+                // Screen पर दिखाना
                 cell.textContent = currentPlayer;
 
-                // CSS class लगाना
-                cell.classList.add(currentPlayer.toLowerCase());
+
+                // CSS class
+                if (currentPlayer === "X") {
+
+                    cell.classList.add("x");
+
+                } else {
+
+                    cell.classList.add("o");
+
+                }
 
 
-                // Winner check करना
+                // Winner check
                 checkWinner();
 
             });
@@ -191,6 +235,7 @@
         });
 
 
+        // Winner check करने वाला function
         function checkWinner() {
 
             let winner = null;
@@ -204,6 +249,7 @@
                 const c = pattern[2];
 
 
+                // तीनों positions same हैं?
                 if (
                     board[a] !== "" &&
                     board[a] === board[b] &&
@@ -214,13 +260,15 @@
 
                     break;
                 }
+
             }
 
 
             // अगर winner मिल गया
             if (winner !== null) {
 
-                status.textContent = "Player " + winner + " Wins!";
+                status.textContent =
+                    "Player " + winner + " Wins!";
 
                 gameRunning = false;
 
@@ -228,7 +276,7 @@
             }
 
 
-            // अगर सभी cells भर गए
+            // अगर कोई खाली cell नहीं बचा
             if (!board.includes("")) {
 
                 status.textContent = "Game Draw!";
@@ -240,8 +288,18 @@
 
 
             // Player बदलना
-            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            if (currentPlayer === "X") {
 
+                currentPlayer = "O";
+
+            } else {
+
+                currentPlayer = "X";
+
+            }
+
+
+            // अगली turn
             status.textContent =
                 "Player " + currentPlayer + "'s Turn";
 
@@ -252,11 +310,11 @@
         restartButton.addEventListener("click", restartGame);
 
 
+        // Game restart
         function restartGame() {
 
-            // Board खाली करना
+            // Board को फिर से 9 खाली positions करना
             board = [
-                "",
                 "",
                 "",
                 "",
@@ -267,18 +325,21 @@
                 ""
             ];
 
-            // X से दोबारा शुरू
+
+            // X से शुरू
             currentPlayer = "X";
+
 
             // Game चालू
             gameRunning = true;
+
 
             // Status reset
             status.textContent = "Player X's Turn";
 
 
-            // सभी cells खाली करना
-            cells.forEach(cell => {
+            // सभी cells साफ करना
+            cells.forEach(function(cell) {
 
                 cell.textContent = "";
 
